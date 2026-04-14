@@ -10,7 +10,10 @@
       "Bash(wc -l /Users/will/Documents/everwill-deploy/src/**/*.ts /Users/will/Documents/everwill-deploy/src/**/**/*.ts)",
       "Bash(git -C /Users/will/Documents/everwill-deploy status)",
       "Bash(pnpm format:check)",
-      "Bash(pnpm format:*)"
+      "Bash(pnpm format:*)",
+      "Bash(pnpm db:push)",
+      "Bash(sqlite3 /Users/will/Documents/everwill-deploy/data/everwill.db \".tables\")",
+      "Bash(sqlite3 /Users/will/Documents/everwill-deploy/data/everwill.db \".schema\")"
     ]
   }
 }

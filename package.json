@@ -4,7 +4,7 @@
   "description": "Graph data release and deployment automation agent",
   "type": "module",
   "scripts": {
-    "dev": "tsx watch src/server/index.ts",
+    "dev": "DOTENV_CONFIG_PATH=.env.dev tsx watch src/server/index.ts",
     "build": "tsc --noEmit",
     "start": "tsx src/server/index.ts",
     "lint": "eslint src/",

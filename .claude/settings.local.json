@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm install:*)",
+      "Bash(pnpm approve-builds:*)",
+      "Bash(pnpm --version)",
+      "Bash(ls /Users/will/Documents/everwill-deploy/node_modules/.pnpm/better-sqlite3*/node_modules/better-sqlite3/build)",
+      "Bash(pnpm rebuild:*)",
+      "Bash(npx tsc:*)",
+      "Bash(wc -l /Users/will/Documents/everwill-deploy/src/**/*.ts /Users/will/Documents/everwill-deploy/src/**/**/*.ts)",
+      "Bash(git -C /Users/will/Documents/everwill-deploy status)"
+    ]
+  }
+}

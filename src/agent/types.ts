@@ -30,7 +30,11 @@ export interface AgentContext {
 export type AgentEvent =
   | { type: "START" }
   | { type: "HISTORY_LOADED"; messages: Array<{ role: string; content: string }> }
-  | { type: "LLM_RESPONDED"; content: string; toolCall?: { name: string; args: Record<string, unknown> } }
+  | {
+      type: "LLM_RESPONDED";
+      content: string;
+      toolCall?: { name: string; args: Record<string, unknown> };
+    }
   | { type: "TOOL_EXECUTED"; result: unknown }
   | { type: "DONE" }
   | { type: "ERROR"; message: string };

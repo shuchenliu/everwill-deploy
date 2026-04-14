@@ -31,11 +31,7 @@ function backoff(attempts: number): string {
  * Silent no-op if a job with the same idempotencyKey already exists,
  * preventing duplicate processing of the same event.
  */
-export function enqueue(
-  type: JobType,
-  payload: unknown,
-  idempotencyKey: string,
-): void {
+export function enqueue(type: JobType, payload: unknown, idempotencyKey: string): void {
   // INSERT OR IGNORE skips the insert if the unique constraint
   // on idempotency_key is violated — no error thrown.
   db.insert(jobs)
@@ -99,10 +95,7 @@ export function claimJob(): Job | null {
  * Mark a job as completed. Called after successful processing.
  */
 export function completeJob(id: number): void {
-  db.update(jobs)
-    .set({ status: "completed", updatedAt: now() })
-    .where(eq(jobs.id, id))
-    .run();
+  db.update(jobs).set({ status: "completed", updatedAt: now() }).where(eq(jobs.id, id)).run();
 }
 
 /**

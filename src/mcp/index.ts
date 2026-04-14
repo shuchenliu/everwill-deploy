@@ -54,10 +54,7 @@ export async function spawnMcpClient(): Promise<{
   await connect();
 
   return {
-    async callTool(
-      name: string,
-      args: Record<string, unknown>,
-    ): Promise<ToolResult> {
+    async callTool(name: string, args: Record<string, unknown>): Promise<ToolResult> {
       try {
         const result = await client.callTool({ name, arguments: args });
         return result as ToolResult;
@@ -80,8 +77,8 @@ export async function spawnMcpClient(): Promise<{
 // Detect if this file is the entry point (spawned as child process).
 // When imported by the client factory above, this block does not run.
 
-const isDirectExecution = process.argv[1]?.endsWith("mcp/index.ts")
-  || process.argv[1]?.endsWith("mcp/index.js");
+const isDirectExecution =
+  process.argv[1]?.endsWith("mcp/index.ts") || process.argv[1]?.endsWith("mcp/index.js");
 
 if (isDirectExecution) {
   const server = new McpServer({

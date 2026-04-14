@@ -15,27 +15,23 @@ import type { AgentContext } from "./types";
  * Load conversation history from the database.
  * TODO: Implement — query the conversations table by job context.
  */
-export const loadHistory = fromPromise(
-  async ({ input }: { input: { jobId: number } }) => {
-    console.log(`[agent] Loading history for job ${input.jobId}...`);
-    // TODO: Query db for conversation history
-    return { messages: [] as Array<{ role: string; content: string }> };
-  },
-);
+export const loadHistory = fromPromise(async ({ input }: { input: { jobId: number } }) => {
+  console.log(`[agent] Loading history for job ${input.jobId}...`);
+  // TODO: Query db for conversation history
+  return { messages: [] as Array<{ role: string; content: string }> };
+});
 
 /**
  * Call the LLM with the current message history.
  * TODO: Implement — use an LLM SDK with SYSTEM_PROMPT.
  */
 export const callLLM = fromPromise(
-  async ({ input }: { input: { messages: AgentContext["messages"] } }) => {
+  async ({ input: _input }: { input: { messages: AgentContext["messages"] } }) => {
     console.log("[agent] Calling LLM...");
-    // TODO: Call LLM API with messages and system prompt
+    // TODO: Call LLM API with _input.messages and system prompt
     return {
       content: "placeholder response",
-      toolCall: undefined as
-        | { name: string; args: Record<string, unknown> }
-        | undefined,
+      toolCall: undefined as { name: string; args: Record<string, unknown> } | undefined,
     };
   },
 );

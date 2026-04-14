@@ -27,8 +27,7 @@ export const agentMachine = setup({
     }),
   },
   guards: {
-    hasRemainingIterations: ({ context }) =>
-      context.iterationCount < context.maxIterations,
+    hasRemainingIterations: ({ context }) => context.iterationCount < context.maxIterations,
   },
   actors: { loadHistory, callLLM, executeTool },
 }).createMachine({

@@ -43,22 +43,30 @@ async function messagingPlugin(fastify: FastifyInstance): Promise<void> {
       return;
     }
 
-    enqueue("MESSAGE", {
-      channel: message.channel,
-      text: message.text ?? "",
-      userId: message.user,
-    }, `msg-${message.channel}-${message.ts ?? randomUUID()}`);
+    enqueue(
+      "MESSAGE",
+      {
+        channel: message.channel,
+        text: message.text ?? "",
+        userId: message.user,
+      },
+      `msg-${message.channel}-${message.ts ?? randomUUID()}`,
+    );
 
     fastify.log.info({ channel: message.channel }, "Enqueued MESSAGE job from DM");
   });
 
   // Listen for @mentions in channels
   boltApp.event("app_mention", async ({ event }) => {
-    enqueue("MESSAGE", {
-      channel: event.channel,
-      text: event.text,
-      userId: event.user,
-    }, `mention-${event.channel}-${event.ts}`);
+    enqueue(
+      "MESSAGE",
+      {
+        channel: event.channel,
+        text: event.text,
+        userId: event.user,
+      },
+      `mention-${event.channel}-${event.ts}`,
+    );
 
     fastify.log.info({ channel: event.channel }, "Enqueued MESSAGE job from mention");
   });

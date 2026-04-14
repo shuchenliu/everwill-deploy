@@ -8,7 +8,9 @@
       "Bash(pnpm rebuild:*)",
       "Bash(npx tsc:*)",
       "Bash(wc -l /Users/will/Documents/everwill-deploy/src/**/*.ts /Users/will/Documents/everwill-deploy/src/**/**/*.ts)",
-      "Bash(git -C /Users/will/Documents/everwill-deploy status)"
+      "Bash(git -C /Users/will/Documents/everwill-deploy status)",
+      "Bash(pnpm format:check)",
+      "Bash(pnpm format:*)"
     ]
   }
 }

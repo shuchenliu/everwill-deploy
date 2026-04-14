@@ -15,6 +15,7 @@ import fp from "fastify-plugin";
 import { App, LogLevel } from "@slack/bolt";
 import type { FastifyInstance } from "fastify";
 import { enqueue } from "../../queue";
+import { getWhitelistFilter } from "./filtering";
 
 // -- Fastify declaration merging ---------------------------------------------
 // This lets other modules call fastify.sendMessage() with full type safety.
@@ -34,6 +35,8 @@ async function messagingPlugin(fastify: FastifyInstance): Promise<void> {
     socketMode: true,
     logLevel: LogLevel.INFO,
   });
+
+  const filters = getWhitelistFilter();
 
   // Listen for direct messages
   boltApp.message(async ({ message }) => {
@@ -58,6 +61,18 @@ async function messagingPlugin(fastify: FastifyInstance): Promise<void> {
 
   // Listen for @mentions in channels
   boltApp.event("app_mention", async ({ event }) => {
+    /*
+      Entry point of the deployment process
+       @todo operation to initiate the process
+       @todo status check
+     */
+
+    // allow whitelisted channels and users only
+    if (!filters.filtering(event)) {
+      fastify.log.debug({ channel: event.channel }, "Event filtered out");
+      return;
+    }
+
     enqueue(
       "MESSAGE",
       {

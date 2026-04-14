@@ -20,7 +20,11 @@ import { spawnMcpClient } from "../mcp";
 import { close as closeDb } from "../db";
 import type { HandlerMap } from "../types";
 
-const app = Fastify({ logger: true });
+const app = Fastify({
+  logger: {
+    level: process.env.LOG_LEVEL ?? "info",
+  },
+});
 
 // -- Register plugins --------------------------------------------------------
 

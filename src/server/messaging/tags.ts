@@ -9,11 +9,14 @@
 import { messageTagSchema, type MessageTag } from "../../queue/schema";
 
 /**
- * Extract the first !tag from a message text, lowercased.
+ * Extract the first standalone !tag from a message text.
+ * The tag must be surrounded by whitespace (or string boundaries) and
+ * match the known set exactly — case-sensitive. This prevents both
+ * unintended matches (e.g. "good!deploy") and typos (e.g. "!Deploy").
  * Returns null if no tag is found or the tag is not in the known set.
  */
 export function extractTag(text: string): MessageTag | null {
-  const match = text.match(/!(\w+)/)?.[1]?.toLowerCase();
+  const match = text.match(/(?<=^|\s)!(\w+)(?=\s|$)/)?.[1];
   if (!match) return null;
   const parsed = messageTagSchema.safeParse(match);
   return parsed.success ? parsed.data : null;

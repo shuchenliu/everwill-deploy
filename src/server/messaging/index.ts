@@ -75,6 +75,7 @@ async function messagingPlugin(fastify: FastifyInstance): Promise<void> {
     }
 
     // Require a known hashtag — drop untagged messages silently
+    // only the first valid tag is recognized
     const tag = extractTag(event.text);
     if (!tag) {
       fastify.log.debug({ channel: event.channel }, "No recognized tag, ignoring");

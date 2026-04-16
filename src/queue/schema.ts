@@ -9,10 +9,15 @@ import { z } from "zod";
 // -- MESSAGE -----------------------------------------------------------------
 // Created when a Slack message or app_mention event is received.
 
+/** Known command tags that messages can carry. Single source of truth. */
+export const messageTagSchema = z.enum(["deploy", "health", "status"]);
+export type MessageTag = z.infer<typeof messageTagSchema>;
+
 export const messagePayloadSchema = z.object({
   channel: z.string(),
   text: z.string(),
   userId: z.string(),
+  tag: messageTagSchema,
 });
 
 export type MessagePayload = z.infer<typeof messagePayloadSchema>;

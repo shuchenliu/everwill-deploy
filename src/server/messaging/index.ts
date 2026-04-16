@@ -16,6 +16,7 @@ import { App, LogLevel } from "@slack/bolt";
 import type { FastifyInstance } from "fastify";
 import { enqueue } from "../../queue";
 import { getWhitelistFilter } from "./filtering";
+import { extractTag } from "./tags";
 
 // -- Fastify declaration merging ---------------------------------------------
 // This lets other modules call fastify.sendMessage() with full type safety.
@@ -73,17 +74,25 @@ async function messagingPlugin(fastify: FastifyInstance): Promise<void> {
       return;
     }
 
+    // Require a known hashtag — drop untagged messages silently
+    const tag = extractTag(event.text);
+    if (!tag) {
+      fastify.log.debug({ channel: event.channel }, "No recognized tag, ignoring");
+      return;
+    }
+
     enqueue(
       "MESSAGE",
       {
         channel: event.channel,
         text: event.text,
         userId: event.user,
+        tag,
       },
       `mention-${event.channel}-${event.ts}`,
     );
 
-    fastify.log.info({ channel: event.channel }, "Enqueued MESSAGE job from mention");
+    fastify.log.info({ channel: event.channel, tag }, "Enqueued MESSAGE job from mention");
   });
 
   // Decorate Fastify with a generic send function — hides Bolt internals

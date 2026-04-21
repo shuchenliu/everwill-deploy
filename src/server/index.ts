@@ -19,6 +19,8 @@ import { start as startWorker } from "../queue/worker";
 import { spawnMcpClient } from "../mcp";
 import { close as closeDb } from "../db";
 import type { HandlerMap } from "../types";
+import { messagePayloadSchema } from "../queue/schema";
+import { parseDatasources } from "../agent/parse";
 
 const app = Fastify({
   logger: {
@@ -42,8 +44,30 @@ app.log.info("MCP client connected");
 
 const handlers: HandlerMap = {
   async MESSAGE(payload) {
-    // TODO: Feed into agent loop, then send response via app.sendMessage()
-    app.log.info({ payload }, "Processing MESSAGE job");
+    // Validate shape. DMs currently enqueue without a `tag`, so we use
+    // safeParse to avoid throwing on untagged messages.
+    const result = messagePayloadSchema.safeParse(payload);
+    if (!result.success) {
+      app.log.info({ payload }, "MESSAGE without recognized tag — skipping");
+      return;
+    }
+    const message = result.data;
+
+    if (message.tag === "deploy") {
+      const parsed = await parseDatasources(message.text);
+      app.log.info(
+        { channel: message.channel, sources: parsed.sources },
+        "Parsed datasources from !deploy",
+      );
+      const sourceList = parsed.sources.map((s) => `• ${s}`).join("\n");
+      await app.sendMessage(
+        message.channel,
+        `Parsed ${parsed.sources.length} datasource(s):\n${sourceList}`,
+      );
+      return;
+    }
+
+    app.log.info({ tag: message.tag }, "MESSAGE tag not yet handled");
   },
 
   async WEBHOOK(payload) {

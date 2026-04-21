@@ -14,6 +14,7 @@
     "db:generate": "drizzle-kit generate"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.90.0",
     "@modelcontextprotocol/sdk": "^1.12.1",
     "@slack/bolt": "^4.3.0",
     "better-sqlite3": "^11.8.1",

@@ -13,7 +13,9 @@
       "Bash(pnpm format:*)",
       "Bash(pnpm db:push)",
       "Bash(sqlite3 /Users/will/Documents/everwill-deploy/data/everwill.db \".tables\")",
-      "Bash(sqlite3 /Users/will/Documents/everwill-deploy/data/everwill.db \".schema\")"
+      "Bash(sqlite3 /Users/will/Documents/everwill-deploy/data/everwill.db \".schema\")",
+      "Bash(pnpm add:*)",
+      "Bash(pnpm build:*)"
     ]
   }
 }

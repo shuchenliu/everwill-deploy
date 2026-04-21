@@ -16,8 +16,20 @@ import { messageTagSchema, type MessageTag } from "../../queue/schema";
  * Returns null if no tag is found or the tag is not in the known set.
  */
 export function extractTag(text: string): MessageTag | null {
-  const match = text.match(/(?<=^|\s)!(\w+)(?=\s|$)/)?.[1];
-  if (!match) return null;
-  const parsed = messageTagSchema.safeParse(match);
+  // Pass 1: find the first !word candidate
+  const tagMatch = text.match(/!(\w+)/);
+  if (!tagMatch || tagMatch.index === undefined) return null;
+
+  const idx = tagMatch.index;
+  const end = idx + tagMatch[0].length;
+  const before = text.slice(0, idx);
+  const after = text.slice(end);
+
+  // Pass 2: each side must be start/end of string, whitespace, or a Slack mention token <@...>
+  const validBefore = idx === 0 || /(\s|<@[^>]+>)\s*$/.test(before);
+  const validAfter = end === text.length || /^(\s|<@[^>]+>)/.test(after);
+  if (!validBefore || !validAfter) return null;
+
+  const parsed = messageTagSchema.safeParse(tagMatch[1]);
   return parsed.success ? parsed.data : null;
 }

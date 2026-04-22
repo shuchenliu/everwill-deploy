@@ -9,7 +9,7 @@ import type Anthropic from "@anthropic-ai/sdk";
 export const datasourcesInputSchema = z.object({
   sources: z
     .array(z.string().min(1))
-    .min(1)
+    .min(0)
     .describe("Names of the source knowledge graphs referenced in the message."),
 });
 
@@ -30,7 +30,7 @@ export const datasourcesToolDef: Anthropic.Tool = {
         type: "array",
         items: { type: "string" },
         description: "Names of the source knowledge graphs referenced in the message.",
-        minItems: 1,
+        minItems: 0,
       },
     },
     required: ["sources"],

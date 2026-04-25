@@ -15,10 +15,17 @@ const MAX_TOKENS = 1024;
 
 const SYSTEM_PROMPT = `You are Everwill, an agent that processes graph pipeline deployment notifications.
 
-Your only job right now is to extract the list of source data graphs (datasources)
-mentioned in a notification message. Call the \`extract_datasources\` tool with the
-distinct source names you find. Do not invent sources; only include names actually
-referenced in the message. Do not include the merged/output graph name.`;
+Your job is to extract the deployment payload from a notification message.
+Call the \`extract_datasources\` tool with three fields:
+
+- source: a URL pointing to the root location where the data is hosted.
+- regular_datasets: the names of regular, complete knowledge-graph datasets
+  referenced in the message.
+- dump_only: the names of merged graphs and partial-by-design datasets
+  (e.g., nodes-only or edges-only) that are intended for dump distribution only.
+
+Do not invent values. If a category has no items, return an empty array for it.
+If the hosting URL is not present, do not invent one.`;
 
 const client = new Anthropic({ apiKey: LLM_API_KEY });
 

@@ -7,10 +7,20 @@ import type Anthropic from "@anthropic-ai/sdk";
  * the returned `input` is validated against this schema at runtime.
  */
 export const datasourcesInputSchema = z.object({
-  sources: z
+  source: z
+    .string()
+    .url()
+    .describe("URL pointing to the root location where the data sources are hosted."),
+  regular_datasets: z
     .array(z.string().min(1))
     .min(0)
-    .describe("Names of the source knowledge graphs referenced in the message."),
+    .describe("Names of regular (complete) knowledge-graph datasets referenced in the message."),
+  dump_only: z
+    .array(z.string().min(1))
+    .min(0)
+    .describe(
+      "Names of merged graphs and partial-by-design datasets (e.g., nodes-only, edges-only) intended for dump distribution only.",
+    ),
 });
 
 export type DatasourcesInput = z.infer<typeof datasourcesInputSchema>;
@@ -26,13 +36,25 @@ export const datasourcesToolDef: Anthropic.Tool = {
   input_schema: {
     type: "object",
     properties: {
-      sources: {
+      source: {
+        type: "string",
+        format: "uri",
+        description: "URL pointing to the root location where the data sources are hosted.",
+      },
+      regular_datasets: {
         type: "array",
         items: { type: "string" },
-        description: "Names of the source knowledge graphs referenced in the message.",
+        description: "Names of regular (complete) knowledge-graph datasets referenced in the message.",
+        minItems: 0,
+      },
+      dump_only: {
+        type: "array",
+        items: { type: "string" },
+        description:
+          "Names of merged graphs and partial-by-design datasets (e.g., nodes-only, edges-only) intended for dump distribution only.",
         minItems: 0,
       },
     },
-    required: ["sources"],
+    required: ["source", "regular_datasets", "dump_only"],
   },
 };

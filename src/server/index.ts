@@ -55,15 +55,21 @@ const handlers: HandlerMap = {
 
     if (message.tag === "deploy") {
       const parsed = await parseDatasources(message.text);
-      app.log.info(
-        { channel: message.channel, sources: parsed.sources },
-        "Parsed datasources from !deploy",
-      );
-      const sourceList = parsed.sources.map((s) => `• ${s}`).join("\n");
-      await app.sendMessage(
-        message.channel,
-        `Parsed ${parsed.sources.length} datasource(s):\n${sourceList}`,
-      );
+      app.log.info({ channel: message.channel, parsed }, "Parsed deploy payload");
+
+      const formatList = (items: string[]): string =>
+        items.length === 0 ? "  _(none)_" : items.map((s) => `  • ${s}`).join("\n");
+
+      const reply = [
+        `*Parsed deploy payload:*`,
+        `*Source:* ${parsed.source}`,
+        `*Regular datasets* (${parsed.regular_datasets.length}):`,
+        formatList(parsed.regular_datasets),
+        `*Dump-only* (${parsed.dump_only.length}):`,
+        formatList(parsed.dump_only),
+      ].join("\n");
+
+      await app.sendMessage(message.channel, reply);
       return;
     }
 
